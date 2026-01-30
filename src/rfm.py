@@ -12,9 +12,18 @@ def compute_rfm(df):
 
     rfm.columns = ['customer_id', 'recency', 'frequency', 'monetary']
 
-    rfm['R'] = pd.qcut(rfm['recency'], 4, labels = [4, 3, 2, 1])
-    rfm['F'] = pd.qcut(rfm['frequency'], 4, labels = [1, 2, 3, 4])
-    rfm['M'] = pd.qcut(rfm['monetary'], 4, labels = [1, 2, 3, 4])
+    rfm['R'] = pd.qcut(rfm['recency'], 4, duplicates = 'drop')
+    rfm['F'] = pd.qcut(rfm['frequency'], 4, duplicates = 'drop')
+    rfm['M'] = pd.qcut(rfm['monetary'], 4, duplicates = 'drop')
+
+    rfm['R'] = rfm['R'].cat.codes
+    rfm['F'] = rfm['F'].cat.codes
+    rfm['M'] = rfm['M'].cat.codes
+
+    rfm['R'] = rfm['R'].max() - rfm['R']
+    rfm['F'] = rfm['F'] + 1
+    rfm['M'] = rfm['M'] + 1
+
     rfm['RFM_score'] = rfm[['R', 'F', 'M']].astype(int).sum(axis = 1)
 
     return rfm
