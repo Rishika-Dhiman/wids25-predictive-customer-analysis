@@ -4,7 +4,7 @@ from datetime import timedelta
 def compute_rfm(df):
     last_date = df['InvoiceDate'].max() + timedelta(days = 1)
 
-    rfm = df.groupby('CustomerID').agg({
+    rfm = df.groupby('Customer ID').agg({
         'InvoiceDate': lambda x: (last_date - x.max()).days,
         'Invoice': 'nunique',
         'Amount': 'sum'
